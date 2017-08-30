@@ -66,4 +66,3 @@ for key, data1, data2 in masterlist:
     for data in data1, data2:
         for d in textwrap.dedent(data).strip().split(' '):
             s2t_exceptions[key].append(d)
-

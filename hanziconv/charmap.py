@@ -168,3 +168,6 @@ extra_simplified = ''.join(textwrap.dedent("""
 
 simplified_charmap = cuhk_simplified + extra_simplified
 traditional_charmap = cuhk_traditional + extra_traditional
+
+simp_to_trad = {s: t for s, t in zip(simplified_charmap, traditional_charmap)}
+trad_to_simp = {t: s for s, t in zip(simplified_charmap, traditional_charmap)}
