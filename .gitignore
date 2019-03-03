@@ -1,3 +1,7 @@
+# Custom
+.mypy_cache/*
+.vscode/*
+
 .coverage
 *.sw[op]
 *.~
