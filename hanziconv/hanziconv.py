@@ -28,7 +28,6 @@ class by doing:
     >>> from hanziconv import HanziConv
 """
 
-import os
 from .charmap import (simplified_charmap,
                       traditional_charmap,
                       simp_to_trad,
@@ -42,7 +41,7 @@ class HanziConv(object):
     __simplified_charmap = simplified_charmap
 
     @classmethod
-    def __convert(cls, text, toTraditional=True, preserve=None):
+    def __convert(cls, text, toTraditional=True, custom_mapping=None):
         """Convert `text` to Traditional characters if `toTraditional` is
         True, else convert to simplified characters
 
@@ -54,20 +53,14 @@ class HanziConv(object):
         if isinstance(text, bytes):
             text = text.decode('utf-8')
 
-        # fromMap = cls.__simplified_charmap
-        # toMap = cls.__traditional_charmap
-        # if not toTraditional:
-        #     fromMap = cls.__traditional_charmap
-        #     toMap = cls.__simplified_charmap
-
         mapper = simp_to_trad
         if not toTraditional:
             mapper = trad_to_simp
 
-        if preserve:
-            assert isinstance(preserve, str), \
-                'Preserve should be a string of characters'
-            mapper.update({c: c for c in preserve})
+        if custom_mapping:
+            assert isinstance(custom_mapping, dict), \
+                'custom_mapping should be a dictionary'
+            mapper.update(custom_mapping)
 
         final = []
         for c in text:
@@ -78,21 +71,23 @@ class HanziConv(object):
         return ''.join(final)
 
     @classmethod
-    def toSimplified(cls, text, preserve=None):
+    def toSimplified(cls, text, custom_mapping=None):
         """Convert `text` to simplified character string.  Assuming text is
         traditional character string
 
-        :param text:  text to convert
-        :returns:     converted UTF-8 characters
+        :param text:           text to convert
+        :param custom_mapping: A dictionary of custom mappings to override
+                               hanziconv's defaults.
+        :returns:              converted UTF-8 characters
 
         >>> from hanziconv import HanziConv
         >>> print(HanziConv.toSimplified('繁簡轉換器'))
         繁简转换器
         """
-        return cls.__convert(text, toTraditional=False, preserve=preserve)
+        return cls.__convert(text, toTraditional=False, custom_mapping=custom_mapping)
 
     @classmethod
-    def toTraditional(cls, text, preserve=None):
+    def toTraditional(cls, text, custom_mapping=None):
         """Convert `text` to traditional character string.  Assuming text is
         simplified character string
 
@@ -102,13 +97,13 @@ class HanziConv(object):
         >>> from hanziconv import HanziConv
         >>> print(HanziConv.toTraditional('繁简转换器'))
         繁簡轉換器
-        >>> print(HanziConv.toTraditional('祢是我的荣耀', preserve='祢'))
+        >>> print(HanziConv.toTraditional('祢是我的荣耀', custom_mapping={'祢': '祢'}))
         祢是我的榮耀
         """
-        return cls.__convert(text, toTraditional=True, preserve=preserve)
+        return cls.__convert(text, toTraditional=True, custom_mapping=custom_mapping)
 
     @classmethod
-    def same(cls, text1, text2, preserve=None):
+    def same(cls, text1, text2, custom_mapping=None):
         """Return True if text1 and text2 meant literally the same, False
         otherwise
 
@@ -121,11 +116,11 @@ class HanziConv(object):
         >>> from hanziconv import HanziConv
         >>> print(HanziConv.same('繁简转换器', '繁簡轉換器'))
         True
-        >>> print(HanziConv.same('祢是我的荣耀', '祢是我的榮耀', preserve='祢'))
+        >>> print(HanziConv.same('祢是我的荣耀', '祢是我的榮耀', custom_mapping={'祢': '祢'}))
         True
         """
-        t1 = cls.toSimplified(text1, preserve=preserve)
-        t2 = cls.toSimplified(text2, preserve=preserve)
+        t1 = cls.toSimplified(text1, custom_mapping=custom_mapping)
+        t2 = cls.toSimplified(text2, custom_mapping=custom_mapping)
         return t1 == t2
 
 
