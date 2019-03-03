@@ -98,7 +98,7 @@ Python API
 Example
 *******
 
-.. code-block:: pycon
+.. code-block:: python
 
     >>> from hanziconv import HanziConv
     >>> print(HanziConv.toSimplified('繁簡轉換器'))
@@ -138,4 +138,3 @@ License
 
 The character map used in this module is based on the Multi-function
 Chinese Character Database developed by Chinese University of Hong Kong.
-
